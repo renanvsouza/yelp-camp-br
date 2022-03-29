@@ -1,0 +1,19 @@
+<%- include('../includes/head') %>
+<%- include('../includes/navbar') %>
+<div class="container">
+    <div class="row mb-3">
+        <h1><%= campground.title %></h1>
+    </div>
+        <div class="row border-bottom border-dark mb-3">
+            <div class="col">
+                <h3><%= campground.location %></h3>
+                <p><%= campground.description %></p>
+                <p><%= campground.price %></p>
+            </div>
+            <a href="/campgrounds/<%= campground.id %>/edit">Edit</a>
+            <form action="/campgrounds/<%= campground.id %>?_method=DELETE" method="POST">
+                <button type="submit">Delete</button>
+            </form>
+        </div>
+</div>
+<%- include('../includes/foot') %>

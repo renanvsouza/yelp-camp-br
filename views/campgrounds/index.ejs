@@ -1,0 +1,19 @@
+<%- include('../includes/head') %>
+<%- include('../includes/navbar') %>
+<div class="container">
+    <div class="row mb-3">
+        <h1>All Campgrounds</h1>
+    </div>
+    <% for (let campground of campgrounds) { %>
+        <div class="row border-bottom border-dark mb-3">
+            <div class="col">
+                <h2><%= campground.title %></h2>
+                <h3><%= campground.location %></h3>
+                <p><%= campground.description %></p>
+                <p><%= campground.price %></p>
+                <a href="/campgrounds/<%= campground.id %>">Show Details</a>
+            </div>
+        </div>
+    <% } %>  
+</div>
+<%- include('../includes/foot') %>

@@ -1,0 +1,26 @@
+<%- include('../includes/head') %>
+<%- include('../includes/navbar') %>
+<div class="container">
+<h1>Editing Campground <%= campground.title %> </h1>
+<form action="/campgrounds/<%= campground.id %>?_method=PUT" method="POST">
+    <div class="mb-3">
+      <label for="title" class="form-label">Title:</label>
+      <input type="text" class="form-control" name="title" id="title" placeholder="<%= campground.title %> ">
+    </div>
+    <div class="mb-3">
+        <label for="description" class="form-label">Description: </label>
+        <textarea name="description" class="form-control" id="description" cols="20" rows="15"><%= campground.description %> 
+        </textarea>
+    </div>
+    <div class="mb-3">
+        <label for="price" class="form-label">Price:</label>
+        <input type="text" class="form-control" name="price" id="price" placeholder="<%= campground.price %>">
+    </div>
+    <div class="mb-3">
+        <label for="location" class="form-label">Location:</label>
+        <input type="text" class="form-control" name="location" id="location" placeholder="<%= campground.location %>">
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+</div>
+<%- include('../includes/foot') %>
