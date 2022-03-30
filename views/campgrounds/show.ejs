@@ -1,19 +1,30 @@
-<%- include('../includes/head') %>
-<%- include('../includes/navbar') %>
-<div class="container">
-    <div class="row mb-3">
-        <h1><%= campground.title %></h1>
-    </div>
-        <div class="row border-bottom border-dark mb-3">
-            <div class="col">
-                <h3><%= campground.location %></h3>
-                <p><%= campground.description %></p>
-                <p><%= campground.price %></p>
-            </div>
-            <a href="/campgrounds/<%= campground.id %>/edit">Edit</a>
-            <form action="/campgrounds/<%= campground.id %>?_method=DELETE" method="POST">
-                <button type="submit">Delete</button>
-            </form>
-        </div>
+<h1><%= campground.title %></h1>
+<div class="d-flex justify-content-center my-4 py-4">
+	<%- include('../includes/carousel') %>
 </div>
-<%- include('../includes/foot') %>
+<div class="row border-bottom">
+	<div class="col">
+		<h2>About</h2>
+		<p><%= campground.description %></p>
+	</div>
+</div>
+<div class="row py-3 border-bottom">
+	<div class="col-3">
+		<section><span class="fw-bold">Location: </span><%= campground.location %></section>
+	</div>
+	<div class="col-3">
+		<section><span class="fw-bold">Price: </span>$ <%= campground.price  %> / night</section>
+	</div>
+</div>
+<div class="row py-3">
+	<div class="col-1">
+		<button class="btn btn-info">
+			<a href="/campgrounds/<%= campground.id %>/edit" style="color: white; text-decoration: none;">Edit</a>
+		</button>
+	</div>
+	<div class="col-1">
+		<form action="/campgrounds/<%= campground.id %>?_method=DELETE" method="POST">
+			<button class="btn btn-danger" type="submit">Delete</button>
+		</form>
+	</div>
+</div>

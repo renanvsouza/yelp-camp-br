@@ -1,0 +1,26 @@
+.campgrounds {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.cards {
+    width: 24rem;
+}
+
+.carousel-img {
+    max-width: 80vh;
+    max-height: 80vh;
+}
+
+@media (max-width: 1400px) {
+    .cards {
+        width: 30rem;
+    }
+}
+
+@media (max-width: 1200px) {
+    .cards {
+        width: 40rem;
+    }
+}
