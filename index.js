@@ -11,6 +11,7 @@ const app = express()
 const Campground = require('./models/campground')
 const catchError = require('./utils/catchError')
 const ExpressError = require('./utils/ExpressError')
+const validateData = require('./utils/validateData')
 
 //Database connection
 
@@ -61,13 +62,12 @@ app.get('/campgrounds/:id', catchError(async (req, res, next) => {
     res.render('campgrounds/show', { campground: foundCampground })
 }))
 
-app.post('/campgrounds', catchError(async (req, res, next) => {
+app.post('/campgrounds', validateData, catchError(async (req, res, next) => {
     const { title, price, description, location, image } = req.body
-    const descriptionFixed = description.trim()
     const newCampground = new Campground({
         title,
         price,
-        description: descriptionFixed,
+        description,
         location,
         image
     })
@@ -75,22 +75,15 @@ app.post('/campgrounds', catchError(async (req, res, next) => {
     res.redirect(`/campgrounds/${newCamp.id}`)
 }))
 
-app.put('/campgrounds/:id', catchError(async (req, res, next) => {
+app.put('/campgrounds/:id', validateData, catchError(async (req, res, next) => {
     const { id } = req.params
     const { title, price, description, location, image } = req.body
-    const previousData = await Campground.findById(id)
-    let descriptionFixed
-    if (description) {
-        descriptionFixed = description.trim()
-    } else {
-        descriptionFixed = previousData.description
-    }
     await Campground.findByIdAndUpdate(id, {
-        title: title || previousData.title,
-        description: descriptionFixed,
-        price: price || previousData.price,
-        location: location || previousData.location,
-        image: image || previousData.image
+        title,
+        description,
+        price,
+        image,
+        location
     })
     res.redirect(`/campgrounds/${id}`)
 }))
@@ -110,8 +103,8 @@ app.all('*', (req, res, next) => {
 //Error handling
 
 app.use((err, req, res, next) => {
-    const { message = 'Something in the way...', status = 500 } = err
-    res.status(status).send(message)
+    const { status = 500 } = err
+    res.status(status).render('error', { error: err })
 })
 
 //Server
