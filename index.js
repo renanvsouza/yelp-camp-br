@@ -9,6 +9,8 @@ const expressLayouts = require('express-ejs-layouts')
 const app = express()
 
 const Campground = require('./models/campground')
+const catchError = require('./utils/catchError')
+const ExpressError = require('./utils/ExpressError')
 
 //Database connection
 
@@ -38,91 +40,78 @@ app.get('/', (req, res) => {
     res.redirect('/campgrounds')
 })
 
-app.get('/campgrounds', async (req, res) => {
-    try {
-        const campgrounds = await Campground.find({})
-        res.render('campgrounds/index', { campgrounds })
-    } catch (error) {
-        console.log(error)
-    }
-})
+app.get('/campgrounds', catchError(async (req, res, next) => {
+    const campgrounds = await Campground.find({})
+    res.render('campgrounds/index', { campgrounds })
+}))
 
 app.get('/campgrounds/new', (req, res) => {
     res.render('campgrounds/new')
 })
 
-app.get('/campgrounds/:id/edit', async (req, res) => {
-    try {
-        const { id } = req.params
-        const foundCampground = await Campground.findById(id)
-        res.render('campgrounds/edit', { campground: foundCampground })
-    } catch (error) {
-        console.log(error)
+app.get('/campgrounds/:id/edit', catchError(async (req, res, next) => {
+    const { id } = req.params
+    const foundCampground = await Campground.findById(id)
+    res.render('campgrounds/edit', { campground: foundCampground })
+}))
+
+app.get('/campgrounds/:id', catchError(async (req, res, next) => {
+    const { id } = req.params
+    const foundCampground = await Campground.findById(id)
+    res.render('campgrounds/show', { campground: foundCampground })
+}))
+
+app.post('/campgrounds', catchError(async (req, res, next) => {
+    const { title, price, description, location, image } = req.body
+    const descriptionFixed = description.trim()
+    const newCampground = new Campground({
+        title,
+        price,
+        description: descriptionFixed,
+        location,
+        image
+    })
+    const newCamp = await newCampground.save()
+    res.redirect(`/campgrounds/${newCamp.id}`)
+}))
+
+app.put('/campgrounds/:id', catchError(async (req, res, next) => {
+    const { id } = req.params
+    const { title, price, description, location, image } = req.body
+    const previousData = await Campground.findById(id)
+    let descriptionFixed
+    if (description) {
+        descriptionFixed = description.trim()
+    } else {
+        descriptionFixed = previousData.description
     }
+    await Campground.findByIdAndUpdate(id, {
+        title: title || previousData.title,
+        description: descriptionFixed,
+        price: price || previousData.price,
+        location: location || previousData.location,
+        image: image || previousData.image
+    })
+    res.redirect(`/campgrounds/${id}`)
+}))
+
+app.delete('/campgrounds/:id', catchError(async (req, res, next) => {
+    const { id } = req.params
+    await Campground.findByIdAndDelete(id)
+    res.redirect('/campgrounds')
+}))
+
+//404 route handling
+
+app.all('*', (req, res, next) => {
+    next(new ExpressError('Page not found', 404))
 })
 
-app.get('/campgrounds/:id', async (req, res) => {
-    try {
-        const { id } = req.params
-        const foundCampground = await Campground.findById(id)
-        res.render('campgrounds/show', { campground: foundCampground })
-    } catch (error) {
-        console.log(error)
-    }
-})
+//Error handling
 
-app.post('/campgrounds', async (req, res) => {
-    try {
-        const { title, price, description, location } = req.body
-        const descriptionFixed = description.trim()
-        const newCampground = new Campground({
-            title,
-            price,
-            description: descriptionFixed,
-            location
-        })
-        await newCampground.save()
-        res.redirect('/campgrounds')
-    } catch (error) {
-        console.log(error)
-    }
-})
-
-app.put('/campgrounds/:id', async (req, res) => {
-    try {
-        const { id } = req.params
-        const { title, price, description, location } = req.body
-        const previousData = await Campground.findById(id)
-        let descriptionFixed
-        if (description) {
-            descriptionFixed = description.trim()
-        } else {
-            descriptionFixed = previousData.description
-        }
-        await Campground.findByIdAndUpdate(id, {
-            title: title || previousData.title,
-            description: descriptionFixed,
-            price: price || previousData.price,
-            location: location || previousData.location
-        })
-        res.redirect('/campgrounds')
-    } catch (error) {
-        console.log(error)
-    }
-})
-
-app.delete('/campgrounds/:id', async (req, res) => {
-    try {
-        const { id } = req.params
-        await Campground.findByIdAndDelete(id)
-        res.redirect('/campgrounds')
-    } catch (error) {
-        console.log(error)
-    }
-})
-
-app.use((req, res) => {
-    res.status(404).send('Not Found')
+app.use((err, req, res, next) => {
+    const { message = 'Something in the way...', status = 500 } = err
+    res.status(status).send(message)
 })
 
 //Server
