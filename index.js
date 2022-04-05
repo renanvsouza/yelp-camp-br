@@ -9,9 +9,10 @@ const expressLayouts = require('express-ejs-layouts')
 const app = express()
 
 const Campground = require('./models/campground')
+const Review = require('./models/reviews')
 const catchError = require('./utils/catchError')
 const ExpressError = require('./utils/ExpressError')
-const validateData = require('./utils/validateData')
+const { validateData, validateReview } = require('./utils/validations')
 
 //Database connection
 
@@ -58,7 +59,7 @@ app.get('/campgrounds/:id/edit', catchError(async (req, res, next) => {
 
 app.get('/campgrounds/:id', catchError(async (req, res, next) => {
     const { id } = req.params
-    const foundCampground = await Campground.findById(id)
+    const foundCampground = await Campground.findById(id).populate('reviews')
     res.render('campgrounds/show', { campground: foundCampground })
 }))
 
@@ -71,8 +72,22 @@ app.post('/campgrounds', validateData, catchError(async (req, res, next) => {
         location,
         image
     })
-    const newCamp = await newCampground.save()
-    res.redirect(`/campgrounds/${newCamp.id}`)
+    await newCampground.save()
+    res.redirect(`/campgrounds/${newCampground.id}`)
+}))
+
+app.post('/campgrounds/:id/reviews', validateReview, catchError(async (req, res, next) => {
+    const { id } = req.params
+    const { body, rating } = req.body
+    const campground = await Campground.findById(id)
+    const newReview = new Review({
+        body,
+        rating
+    })
+    await newReview.save()
+    campground.reviews.push(newReview)
+    await campground.save()
+    res.redirect('back')
 }))
 
 app.put('/campgrounds/:id', validateData, catchError(async (req, res, next) => {

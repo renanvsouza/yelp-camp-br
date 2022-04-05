@@ -4,7 +4,7 @@
 </div>
 <div class="row border-bottom">
 	<div class="col">
-		<h5>About:</h5>
+		<h4>About:</h4>
 		<p><%= campground.description %></p>
 	</div>
 </div>
@@ -13,17 +13,52 @@
 		<section><span class="fw-bold">Location: </span><%= campground.location %></section>
 	</div>
 </div>
-<div class="row py-3">
+<div class="row py-3 border-bottom">
 	<div class="col">
 		<section><span class="fw-bold">Price: </span>$ <%= campground.price  %> / night</section>
 	</div>
 </div>
-
-<div class="mb-2">
-	<button class="btn btn-sm btn-info">
-		<a href="/campgrounds/<%= campground.id %>/edit" style="color:white; text-decoration:none;">Edit Campground</a>
-	</button>
+<% if (campground.reviews.length) { %>
+<div class="row py-3">
+	<h4>Reviews:</h4>
 </div>
-<form action="/campgrounds/<%= campground.id %>?_method=DELETE" method="POST">
-	<button class="btn btn-sm btn-danger" type="submit">Delete Campground</button>
-</form>
+<% } %>
+<% for (let review of campground.reviews) { %>
+<div class="card">
+	<div class="card-body">
+		<section><span class="fw-bold">Rating: </span><%= review.rating %></section>
+		<section><span class="fw-bold">Review: </span><%= review.body %></section>
+	</div>
+</div>
+<% } %>
+<div class="row py-3 border-bottom">
+	<div class="col">
+		<form action="/campgrounds/<%= campground.id %>/reviews" method="POST">
+			<div class="mb-3">
+				<label class="form-label" for="rating">Your rating:</label>
+				<input class="form-range" type="range" name="rating" id="rating" min="1" max="5">
+			</div>
+			<div class="mb-3">
+				<label class="form-label" for="body">Leave a review:</label>
+				<textarea class="form-control" name="body" id="body" cols="30" rows="2" required></textarea>
+			</div>
+			<div class="mb-3">
+				<button class="btn btn-success" type="submit">Post Review</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row my-2">
+	<h5>Admin area:</h5>
+	<div class="col-2">
+		<button class="btn btn-sm btn-info">
+			<a href="/campgrounds/<%= campground.id %>/edit" style="color:white; text-decoration:none;">Edit Campground</a>
+		</button>
+	</div>
+	<div class="col-2">
+		<form action="/campgrounds/<%= campground.id %>?_method=DELETE" method="POST">
+			<button class="btn btn-sm btn-danger" type="submit">Delete Campground</button>
+		</form>
+	</div>
+</div>
