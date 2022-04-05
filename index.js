@@ -7,12 +7,8 @@ const path = require('path')
 const methodOverride = require('method-override')
 const expressLayouts = require('express-ejs-layouts')
 const app = express()
-
-const Campground = require('./models/campground')
-const Review = require('./models/reviews')
-const catchError = require('./utils/catchError')
 const ExpressError = require('./utils/ExpressError')
-const { validateData, validateReview } = require('./utils/validations')
+const campgroundRoutes = require('./routes/campgrounds')
 
 //Database connection
 
@@ -42,72 +38,7 @@ app.get('/', (req, res) => {
     res.redirect('/campgrounds')
 })
 
-app.get('/campgrounds', catchError(async (req, res, next) => {
-    const campgrounds = await Campground.find({})
-    res.render('campgrounds/index', { campgrounds })
-}))
-
-app.get('/campgrounds/new', (req, res) => {
-    res.render('campgrounds/new')
-})
-
-app.get('/campgrounds/:id/edit', catchError(async (req, res, next) => {
-    const { id } = req.params
-    const foundCampground = await Campground.findById(id)
-    res.render('campgrounds/edit', { campground: foundCampground })
-}))
-
-app.get('/campgrounds/:id', catchError(async (req, res, next) => {
-    const { id } = req.params
-    const foundCampground = await Campground.findById(id).populate('reviews')
-    res.render('campgrounds/show', { campground: foundCampground })
-}))
-
-app.post('/campgrounds', validateData, catchError(async (req, res, next) => {
-    const { title, price, description, location, image } = req.body
-    const newCampground = new Campground({
-        title,
-        price,
-        description,
-        location,
-        image
-    })
-    await newCampground.save()
-    res.redirect(`/campgrounds/${newCampground.id}`)
-}))
-
-app.post('/campgrounds/:id/reviews', validateReview, catchError(async (req, res, next) => {
-    const { id } = req.params
-    const { body, rating } = req.body
-    const campground = await Campground.findById(id)
-    const newReview = new Review({
-        body,
-        rating
-    })
-    await newReview.save()
-    campground.reviews.push(newReview)
-    await campground.save()
-    res.redirect('back')
-}))
-
-app.put('/campgrounds/:id', validateData, catchError(async (req, res, next) => {
-    const { id } = req.params
-    const { title, price, description, location, image } = req.body
-    await Campground.findByIdAndUpdate(id, {
-        title,
-        description,
-        price,
-        image,
-        location
-    })
-    res.redirect(`/campgrounds/${id}`)
-}))
-
-app.delete('/campgrounds/:id', catchError(async (req, res, next) => {
-    const { id } = req.params
-    await Campground.findByIdAndDelete(id)
-    res.redirect('/campgrounds')
-}))
+app.use('/campgrounds', campgroundRoutes)
 
 //404 route handling
 
