@@ -19,6 +19,7 @@ router.route('/')
             image
         })
         await newCampground.save()
+        req.flash('success', 'Campground created!')
         res.redirect(`/campgrounds/${newCampground.id}`)
     }))
 
@@ -31,6 +32,10 @@ router.route('/:id')
     .get(catchError(async (req, res, next) => {
         const { id } = req.params
         const foundCampground = await Campground.findById(id).populate('reviews')
+        if (!foundCampground) {
+            req.flash('error', 'Campground not found.')
+            return res.redirect('/campgrounds')
+        }
         res.render('campgrounds/show', { campground: foundCampground })
     }))
     .put(validateData, catchError(async (req, res, next) => {
@@ -43,11 +48,13 @@ router.route('/:id')
             image,
             location
         })
+        req.flash('success', 'Campground updated!')
         res.redirect(`/campgrounds/${id}`)
     }))
     .delete(catchError(async (req, res, next) => {
         const { id } = req.params
         await Campground.findByIdAndDelete(id)
+        req.flash('success', 'Campground deleted!')
         res.redirect('/campgrounds')
     }))
 
@@ -70,6 +77,7 @@ router.route('/:id/reviews')
         await newReview.save()
         campground.reviews.push(newReview)
         await campground.save()
+        req.flash('success', 'Review created!')
         res.redirect('back')
     }))
 
@@ -79,7 +87,7 @@ router.route('/:id/reviews/:reviewId')
 
         await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } })
         await Review.findByIdAndDelete(reviewId)
-
+        req.flash('success', 'Review deleted!')
         res.redirect('back')
     }))
 
