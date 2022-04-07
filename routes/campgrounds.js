@@ -1,6 +1,9 @@
 const router = require('express').Router()
-const catchError = require('../utils/catchError')
-const { validateData, validateReview } = require('../utils/validations')
+const { validateData,
+    validateReview,
+    verifyAuthenticated,
+    catchError
+} = require('../utils/middleware')
 const Campground = require('../models/campground')
 const Review = require('../models/reviews')
 
@@ -9,7 +12,7 @@ router.route('/')
         const campgrounds = await Campground.find({})
         res.render('campgrounds/index', { campgrounds })
     }))
-    .post(validateData, catchError(async (req, res, next) => {
+    .post(validateData, verifyAuthenticated, catchError(async (req, res, next) => {
         const { title, price, description, location, image } = req.body
         const newCampground = new Campground({
             title,
@@ -24,7 +27,7 @@ router.route('/')
     }))
 
 router.route('/new')
-    .get((req, res) => {
+    .get(verifyAuthenticated, (req, res) => {
         res.render('campgrounds/new')
     })
 
@@ -38,7 +41,7 @@ router.route('/:id')
         }
         res.render('campgrounds/show', { campground: foundCampground })
     }))
-    .put(validateData, catchError(async (req, res, next) => {
+    .put(verifyAuthenticated, validateData, catchError(async (req, res, next) => {
         const { id } = req.params
         const { title, price, description, location, image } = req.body
         await Campground.findByIdAndUpdate(id, {
@@ -51,7 +54,7 @@ router.route('/:id')
         req.flash('success', 'Campground updated!')
         res.redirect(`/campgrounds/${id}`)
     }))
-    .delete(catchError(async (req, res, next) => {
+    .delete(verifyAuthenticated, catchError(async (req, res, next) => {
         const { id } = req.params
         await Campground.findByIdAndDelete(id)
         req.flash('success', 'Campground deleted!')
@@ -59,14 +62,14 @@ router.route('/:id')
     }))
 
 router.route('/:id/edit')
-    .get(catchError(async (req, res, next) => {
+    .get(verifyAuthenticated, catchError(async (req, res, next) => {
         const { id } = req.params
         const foundCampground = await Campground.findById(id)
         res.render('campgrounds/edit', { campground: foundCampground })
     }))
 
 router.route('/:id/reviews')
-    .post(validateReview, catchError(async (req, res, next) => {
+    .post(verifyAuthenticated, validateReview, catchError(async (req, res, next) => {
         const { id } = req.params
         const { body, rating } = req.body
         const campground = await Campground.findById(id)
@@ -82,7 +85,7 @@ router.route('/:id/reviews')
     }))
 
 router.route('/:id/reviews/:reviewId')
-    .delete(catchError(async (req, res, next) => {
+    .delete(verifyAuthenticated, catchError(async (req, res, next) => {
         const { id, reviewId } = req.params
 
         await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } })

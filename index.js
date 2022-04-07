@@ -10,7 +10,10 @@ const expressLayouts = require('express-ejs-layouts')
 const session = require('express-session')
 const ExpressError = require('./utils/ExpressError')
 const campgroundRoutes = require('./routes/campgrounds')
+const userRoutes = require('./routes/users')
+const User = require('./models/user')
 const flash = require('connect-flash')
+const passport = require('passport')
 
 //Database connection
 
@@ -40,8 +43,20 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(methodOverride('_method'))
 app.use(flash())
+app.use(passport.initialize())
+app.use(passport.session())
+
+//Passport configuration (new createStrategy version- see passport-local-mongoose documentation)
+
+passport.use(User.createStrategy());
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
+//Add the flash req to the res.locals object
 
 app.use((req, res, next) => {
+    res.locals.currentUser = req.user
     res.locals.success = req.flash('success')
     res.locals.error = req.flash('error')
     next()
@@ -60,6 +75,7 @@ app.get('/', (req, res) => {
 })
 
 app.use('/campgrounds', campgroundRoutes)
+app.use('/users', userRoutes)
 
 //404 route handling
 
