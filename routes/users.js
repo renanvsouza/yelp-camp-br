@@ -5,6 +5,10 @@ const passport = require('passport')
 
 router.route('/register')
     .get((req, res, next) => {
+        if (req.user) {
+            req.flash('error', 'You are logged in. To register a different account, please logout first.')
+            return res.redirect('/campgrounds')
+        }
         res.render('users/register')
     })
     .post(catchError(async (req, res, next) => {
@@ -16,8 +20,11 @@ router.route('/register')
         //Try catch just to flash the error message in the same page
         try {
             //Saves to the DB, so no need to use save()
-            await User.register(user, password)
-            req.flash('success', 'User registered. Welcome!')
+            const newUser = await User.register(user, password)
+            req.login(newUser, (err) => {
+                if (err) return next(err)
+            })
+            req.flash('success', 'Welcome!')
             res.redirect('/campgrounds')
         } catch (e) {
             req.flash('error', e.message)
@@ -27,11 +34,15 @@ router.route('/register')
 
 router.route('/login')
     .get((req, res, next) => {
+        if (req.user) {
+            req.flash('error', 'You are already logged in. To use a different account, please logout first.')
+            return res.redirect('back')
+        }
         res.render('users/login')
     })
     //Using the passport middleware to authenticate
     .post(passport.authenticate('local', { failureFlash: true, failureRedirect: 'back' }), (req, res, next) => {
-        req.flash('success', 'Logged in.')
+        req.flash('success', 'Welcome back!')
         res.redirect('/campgrounds')
     })
 

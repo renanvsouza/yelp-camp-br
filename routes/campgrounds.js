@@ -1,7 +1,9 @@
 const router = require('express').Router()
 const { validateData,
     validateReview,
-    verifyAuthenticated,
+    isLoggedIn,
+    isAuthor,
+    isReviewAuthor,
     catchError
 } = require('../utils/middleware')
 const Campground = require('../models/campground')
@@ -12,14 +14,16 @@ router.route('/')
         const campgrounds = await Campground.find({})
         res.render('campgrounds/index', { campgrounds })
     }))
-    .post(validateData, verifyAuthenticated, catchError(async (req, res, next) => {
+    .post(validateData, isLoggedIn, catchError(async (req, res, next) => {
         const { title, price, description, location, image } = req.body
+        const author = req.user._id
         const newCampground = new Campground({
             title,
             price,
             description,
             location,
-            image
+            image,
+            author
         })
         await newCampground.save()
         req.flash('success', 'Campground created!')
@@ -27,21 +31,28 @@ router.route('/')
     }))
 
 router.route('/new')
-    .get(verifyAuthenticated, (req, res) => {
+    .get(isLoggedIn, (req, res) => {
         res.render('campgrounds/new')
     })
 
 router.route('/:id')
     .get(catchError(async (req, res, next) => {
         const { id } = req.params
-        const foundCampground = await Campground.findById(id).populate('reviews')
+        //const foundCampground = await Campground.findById(id).populate('reviews').populate('author')
+        const foundCampground = await Campground.findById(id).populate({
+            path: 'reviews',
+            populate: {
+                path: 'author',
+                model: 'User'
+            }
+        }).populate('author')
         if (!foundCampground) {
             req.flash('error', 'Campground not found.')
             return res.redirect('/campgrounds')
         }
         res.render('campgrounds/show', { campground: foundCampground })
     }))
-    .put(verifyAuthenticated, validateData, catchError(async (req, res, next) => {
+    .put(isLoggedIn, isAuthor, validateData, catchError(async (req, res, next) => {
         const { id } = req.params
         const { title, price, description, location, image } = req.body
         await Campground.findByIdAndUpdate(id, {
@@ -54,7 +65,7 @@ router.route('/:id')
         req.flash('success', 'Campground updated!')
         res.redirect(`/campgrounds/${id}`)
     }))
-    .delete(verifyAuthenticated, catchError(async (req, res, next) => {
+    .delete(isLoggedIn, isAuthor, catchError(async (req, res, next) => {
         const { id } = req.params
         await Campground.findByIdAndDelete(id)
         req.flash('success', 'Campground deleted!')
@@ -62,18 +73,20 @@ router.route('/:id')
     }))
 
 router.route('/:id/edit')
-    .get(verifyAuthenticated, catchError(async (req, res, next) => {
+    .get(isLoggedIn, isAuthor, catchError(async (req, res, next) => {
         const { id } = req.params
         const foundCampground = await Campground.findById(id)
         res.render('campgrounds/edit', { campground: foundCampground })
     }))
 
 router.route('/:id/reviews')
-    .post(verifyAuthenticated, validateReview, catchError(async (req, res, next) => {
+    .post(isLoggedIn, validateReview, catchError(async (req, res, next) => {
         const { id } = req.params
         const { body, rating } = req.body
+        const author = req.user._id
         const campground = await Campground.findById(id)
         const newReview = new Review({
+            author,
             body,
             rating
         })
@@ -85,7 +98,7 @@ router.route('/:id/reviews')
     }))
 
 router.route('/:id/reviews/:reviewId')
-    .delete(verifyAuthenticated, catchError(async (req, res, next) => {
+    .delete(isLoggedIn, isReviewAuthor, catchError(async (req, res, next) => {
         const { id, reviewId } = req.params
 
         await Campground.findByIdAndUpdate(id, { $pull: { reviews: reviewId } })

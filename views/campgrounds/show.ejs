@@ -2,11 +2,13 @@
 	<div>
 		<h1><%= campground.title %></h1>
 	</div>
+	<% if (currentUser && (currentUser.id == campground.author.id)) { %>
 	<div>
 		<span class="badge rounded-pill bg-secondary">
 			<a href="/campgrounds/<%= campground.id %>/edit" style="color: rgb(224, 224, 224); text-decoration: none;">Edit</a>
 		</span>
 	</div>
+	<% } %>
 </div>
 <div class="d-flex justify-content-center my-2 py-4">
 	<%- include('../includes/carousel') %>
@@ -24,7 +26,12 @@
 </div>
 <div class="row py-3 border-bottom">
 	<div class="col">
-		<section><span class="fw-bold">Price: </span>$ <%= campground.price  %> / night</section>
+		<section><span class="fw-bold">Price: </span>$ <%= campground.price  %> /night</section>
+	</div>
+</div>
+<div class="row py-3 border-bottom">
+	<div class="col">
+		<section><span class="fw-bold">Posted by: </span><%= campground.author.username %></section>
 	</div>
 </div>
 <div class="row py-3">
@@ -39,14 +46,18 @@
 	<div class="card-body">
 		<section><span class="fw-bold">Rating: </span><%= review.rating %></section>
 		<section><span class="fw-bold">Review: </span><%= review.body %></section>
+		<section class="text-muted mt-3">Posted by <%= review.author.username %></section>
+		<% if (currentUser && (currentUser.id == review.author.id)) { %>
 		<div class="mt-2">
 			<form action="/campgrounds/<%= campground.id %>/reviews/<%= review.id %>?_method=DELETE" method="POST">
 				<button class="btn btn-outline-danger btn-sm" type="submit">Delete</button>
 			</form>
 		</div>
+		<% } %>
 	</div>
 </div>
 <% } %>
+<% if (currentUser && (currentUser.id !== campground.author.id)) { %>
 <div class="row py-3">
 	<div class="col">
 		<form action="/campgrounds/<%= campground.id %>/reviews" method="POST">
@@ -64,3 +75,4 @@
 		</form>
 	</div>
 </div>
+<% } %>
