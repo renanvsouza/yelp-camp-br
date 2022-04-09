@@ -39,6 +39,8 @@ exports.isLoggedIn = function isLoggedIn(req, res, next) {
     next()
 }
 
+//Check if the logged user is the campground author
+
 exports.isAuthor = async function isAuthor(req, res, next) {
     const { id } = req.params
     const campground = await Campground.findById(id).populate('author')
@@ -47,6 +49,8 @@ exports.isAuthor = async function isAuthor(req, res, next) {
     }
     next()
 }
+
+//Check if the logged user is the review author
 
 exports.isReviewAuthor = async function isReviewAuthor(req, res, next) {
     const { reviewId } = req.params
