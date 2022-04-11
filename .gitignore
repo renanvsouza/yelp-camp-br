@@ -103,5 +103,8 @@ dist
 # TernJS port file
 .tern-port
 
-#Seeds
+# Seeds
 /seeds
+
+# Uploads folder
+/uploads

@@ -10,15 +10,16 @@ module.exports.getCampIndex = async (req, res, next) => {
 //Post new campground
 
 module.exports.postNewCamp = async (req, res, next) => {
-    const { title, price, description, location, image } = req.body
+    const { title, price, description, location } = req.body
+    const images = req.files.map(f => ({ url: f.path, filename: f.filename }))
     const author = req.user._id
     const newCampground = new Campground({
         title,
         price,
         description,
         location,
-        image,
-        author
+        author,
+        images
     })
     await newCampground.save()
     req.flash('success', 'Campground created!')

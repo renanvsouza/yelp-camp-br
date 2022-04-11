@@ -1,6 +1,9 @@
 const router = require('express').Router()
 const campgrounds = require('../controllers/campgrounds')
 const reviews = require('../controllers/reviews')
+const multer = require('multer')
+const { storage } = require('../cloudinary')
+const upload = multer({ storage })
 
 //Utils
 
@@ -16,7 +19,7 @@ const { validateData,
 
 router.route('/')
     .get(catchError(campgrounds.getCampIndex))
-    .post(validateData, isLoggedIn, catchError(campgrounds.postNewCamp))
+    .post(isLoggedIn, upload.array('images'), validateData, catchError(campgrounds.postNewCamp))
 
 router.route('/new')
     .get(isLoggedIn, campgrounds.getNewCampForm)
