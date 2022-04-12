@@ -8,6 +8,12 @@
     width: 24rem;
 }
 
+@media (min-width: 1200px) {
+    .cards img {
+        max-height: 250px;
+    }
+}
+
 @media (max-width: 1400px) {
     .cards {
         width: 30rem;

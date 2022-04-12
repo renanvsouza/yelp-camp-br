@@ -5,7 +5,7 @@
 </div>
 <div class="d-flex justify-content-center">
 	<div class="mx-3" style="width: 100%; max-width: 690px;">
-		<form action="/campgrounds/<%= campground.id %>?_method=PUT" method="POST">
+		<form action="/campgrounds/<%= campground.id %>?_method=PUT" method="POST" enctype="multipart/form-data">
 			<div class="mb-3">
 				<label for="title" class="form-label">Title:</label>
 				<input type="text" class="form-control" name="title" id="title" value="<%= campground.title %>">
@@ -16,8 +16,20 @@
         		</textarea>
 			</div>
 			<div class="mb-3">
-				<label for="image" class="form-label">Image URL: </label>
-				<input type="text" class="form-control" name="image" id="image" value="<%= campground.image %>">
+				<label for="formFile" class="form-label">Add some images:</label>
+				<input class="form-control" type="file" id="formFile" name="images" multiple>
+			</div>
+			<label for="" class="form-label">Select images to remove:</label>
+			<div class="d-flex mb-3 justify-content-evenly align-items-baseline flex-wrap p-3 border">
+				<% campground.images.forEach((img, i) => { %>
+				<div class="m-2">
+					<img src="<%= img.thumbnail %>" class="img-thumbnail" alt="">
+					<div>
+						<input class="form-check-inline me-1" type="checkbox" name="deleteImages[]" id="image-<%= i %>" value="<%= img.filename %>">
+						<label for="image-<%= i %>">Delete?</label>
+					</div>
+				</div>
+				<% }) %>
 			</div>
 			<div class="row mb-3">
 				<label for="price" class="form-label">Price: </label>

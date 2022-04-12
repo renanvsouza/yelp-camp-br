@@ -26,7 +26,7 @@ router.route('/new')
 
 router.route('/:id')
     .get(catchError(campgrounds.getCampDetails))
-    .put(isLoggedIn, isAuthor, validateData, catchError(campgrounds.updateCamp))
+    .put(isLoggedIn, isAuthor, upload.array('images'), validateData, catchError(campgrounds.updateCamp))
     .delete(isLoggedIn, isAuthor, catchError(campgrounds.deleteCamp))
 
 router.route('/:id/edit')
