@@ -27,6 +27,6 @@
 }
 
 .carousel-img {
-    max-width: 80vw;
-    max-height: 80vh;
+    width: 900px;
+    height: 600px;
 }

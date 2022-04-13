@@ -19,75 +19,97 @@
 		</p>
 	</div>
 </div>
-<div class="d-flex justify-content-center my-2 py-4">
-	<%- include('../includes/carousel') %>
+<div class="row my-3">
+	<div class="col">
+		<%- include('../includes/carousel') %>
+	</div>
 </div>
 <div class="row border-bottom">
-	<div class="col">
+	<div class="col-10 offset-1">
 		<h4>About:</h4>
 		<p><%= campground.description %></p>
 	</div>
 </div>
-<div class="row py-3 border-bottom">
-	<div class="col">
+<div class="row pt-3">
+	<div class="col-10 offset-1">
 		<section><span class="fw-bold">Location: </span><%= campground.location %></section>
 	</div>
 </div>
 <div class="row py-3 border-bottom">
-	<div class="col">
+	<div id='map' class="col-10 offset-1" style="height: 350px;"></div>
+</div>
+<div class="row py-3 border-bottom">
+	<div class="col-10 offset-1">
 		<section><span class="fw-bold">Price: </span>$ <%= campground.price  %> /night</section>
 	</div>
 </div>
 <% if (campground.reviews.length) { %>
 <div class="row py-3">
-	<h4>Reviews:</h4>
+	<div class="col-10 offset-1">
+		<h4>Reviews:</h4>
+	</div>
 </div>
 <% for (let review of campground.reviews) { %>
-<div class="card mb-2">
-	<div class="card-body">
-		<p class="starability-result" data-rating="<%= review.rating %>">
-		</p>
-		<p class="review">
-			<%= review.body %>
-		</p>
-		<section class="text-muted mt-3">Posted by <%= review.author.username %></section>
-		<% if (currentUser && (currentUser.id == review.author.id)) { %>
-		<div class="mt-2">
-			<form action="/campgrounds/<%= campground.id %>/reviews/<%= review.id %>?_method=DELETE" method="POST">
-				<button class="btn btn-outline-danger btn-sm" type="submit">Delete</button>
-			</form>
+<div class="row">
+	<div class="col-10 offset-1">
+		<div class="card mb-2">
+			<div class="card-body">
+				<p class="starability-result" data-rating="<%= review.rating %>">
+				</p>
+				<p class="review">
+					<%= review.body %>
+				</p>
+				<section class="text-muted mt-3">Posted by <%= review.author.username %></section>
+				<% if (currentUser && (currentUser.id == review.author.id)) { %>
+				<div class="mt-2">
+					<form action="/campgrounds/<%= campground.id %>/reviews/<%= review.id %>?_method=DELETE" method="POST">
+						<button class="btn btn-outline-danger btn-sm" type="submit">Delete</button>
+					</form>
+				</div>
+				<% } %>
+			</div>
 		</div>
-		<% } %>
 	</div>
 </div>
 <% } } %>
 <% if (currentUser && (currentUser.id !== campground.author.id)) { %>
 <div class="row mt-3">
-	<h4>Leave a review:</h4>
+	<div class="col-10 offset-1">
+		<h4>Leave a review:</h4>
+	</div>
 </div>
 <div class="row">
-	<form action="/campgrounds/<%= campground.id %>/reviews" method="POST">
-		<label class="form-label" for="rating">Your rating:</label>
-		<fieldset class="starability-checkmark">
-			<input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
-			<input type="radio" id="first-rate1" name="rating" value="1" />
-			<label for="first-rate1" title="Terrible">1 star</label>
-			<input type="radio" id="first-rate2" name="rating" value="2" />
-			<label for="first-rate2" title="Not good">2 stars</label>
-			<input type="radio" id="first-rate3" name="rating" value="3" />
-			<label for="first-rate3" title="Average">3 stars</label>
-			<input type="radio" id="first-rate4" name="rating" value="4" />
-			<label for="first-rate4" title="Very good">4 stars</label>
-			<input type="radio" id="first-rate5" name="rating" value="5" />
-			<label for="first-rate5" title="Amazing">5 stars</label>
-		</fieldset>
-		<div class="mb-3">
-			<label class="form-label" for="body">Add some text:</label>
-			<textarea class="form-control" name="body" id="body" cols="30" rows="2" required></textarea>
-		</div>
-		<div class="mb-3">
-			<button class="btn btn-success" type="submit">Post Review</button>
-		</div>
-	</form>
+	<div class="col-10 offset-1">
+		<form action="/campgrounds/<%= campground.id %>/reviews" method="POST">
+			<label class="form-label" for="rating">Your rating:</label>
+			<fieldset class="starability-checkmark">
+				<input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
+				<input type="radio" id="first-rate1" name="rating" value="1" />
+				<label for="first-rate1" title="Terrible">1 star</label>
+				<input type="radio" id="first-rate2" name="rating" value="2" />
+				<label for="first-rate2" title="Not good">2 stars</label>
+				<input type="radio" id="first-rate3" name="rating" value="3" />
+				<label for="first-rate3" title="Average">3 stars</label>
+				<input type="radio" id="first-rate4" name="rating" value="4" />
+				<label for="first-rate4" title="Very good">4 stars</label>
+				<input type="radio" id="first-rate5" name="rating" value="5" />
+				<label for="first-rate5" title="Amazing">5 stars</label>
+			</fieldset>
+			<div class="mb-3">
+				<label class="form-label" for="body">Add some text:</label>
+				<textarea class="form-control" name="body" id="body" cols="30" rows="2" required></textarea>
+			</div>
+			<div class="mb-3">
+				<button class="btn btn-success" type="submit">Post Review</button>
+			</div>
+		</form>
+	</div>
 </div>
 <% } %>
+
+<script>
+	//variables to use in the mapboxShowPage script
+	const mapboxToken = '<%= process.env.MAPBOX_TOKEN %>'
+	const campgroundId = '<%= campground.id %>'
+</script>
+<script src="/js/mapboxShowPage.js"></script>

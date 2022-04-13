@@ -5,6 +5,7 @@ exports.campgroundSchema = Joi.object({
     price: Joi.number().min(0).required(),
     description: Joi.string().trim().required(),
     location: Joi.string().required(),
+    geometry: Joi.object(),
     images: Joi.array(),
     deleteImages: Joi.array()
 })

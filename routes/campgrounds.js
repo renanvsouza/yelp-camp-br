@@ -14,6 +14,7 @@ const { validateData,
     isReviewAuthor,
     catchError
 } = require('../utils/middleware')
+const Campground = require('../models/campground')
 
 //Routes
 
@@ -40,5 +41,10 @@ router.route('/:id/reviews')
 
 router.route('/:id/reviews/:reviewId')
     .delete(isLoggedIn, isReviewAuthor, catchError(reviews.deleteReview))
+
+//Route to make the json data available for mapbox 
+
+router.route('/:id/data')
+    .get(catchError(campgrounds.campgroundToJSON))
 
 module.exports = router

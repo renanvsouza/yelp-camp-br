@@ -8,9 +8,11 @@
 <div class="campgrounds">
 	<% for (let campground of campgrounds) { %>
 	<div class="card m-3 cards">
-		<% if (campground.images.length) { %>
-		<img src="<%= campground.images[0].url %> " class="card-img-top" alt="">
-		<% } %>
+		<div style="min-height: 250px;">
+			<% if (campground.images.length) { %>
+			<img src="<%= campground.images[0].url %> " class="card-img-top" alt="">
+			<% } %>
+		</div>
 		<div class="card-body">
 			<h5 class="card-title"><%= campground.title %></h5>
 			<p class="card-text"><%= campground.description %></p>
