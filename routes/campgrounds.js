@@ -24,6 +24,9 @@ router.route('/')
 router.route('/new')
     .get(isLoggedIn, campgrounds.getNewCampForm)
 
+router.route('/find')
+    .get(catchError(campgrounds.searchCamp))
+
 router.route('/:id')
     .get(catchError(campgrounds.getCampDetails))
     .put(isLoggedIn, isAuthor, upload.array('images'), validateData, catchError(campgrounds.updateCamp))

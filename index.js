@@ -30,7 +30,7 @@ const sessionConfig = {
     resave: false,
     saveUninitialized: true,
     cookie: {
-        httpOnly: true,                                 //For security reasons
+        httpOnly: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,  //Miliseconds, seconds, minutes, hours, days - So it expires 7 days from now
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
@@ -53,7 +53,7 @@ passport.use(User.createStrategy());
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
-//Add the flash req to the res.locals object
+//Add the flash object and current user to the res.locals object
 
 app.use((req, res, next) => {
     res.locals.currentUser = req.user

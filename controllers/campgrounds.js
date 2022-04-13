@@ -5,6 +5,23 @@ const cloudinary = require('cloudinary')
 
 module.exports.getCampIndex = async (req, res, next) => {
     const campgrounds = await Campground.find({})
+    res.locals.searchParams = ""
+    res.render('campgrounds/index', { campgrounds })
+}
+
+//Search a campground
+
+module.exports.searchCamp = async (req, res) => {
+    const { search } = req.query
+
+    const campgrounds = await Campground.find({
+        $or:
+            [
+                { title: { $regex: search, $options: 'i' } },
+                { location: { $regex: search, $options: 'i' } }
+            ]
+    })
+    res.locals.searchParams = search
     res.render('campgrounds/index', { campgrounds })
 }
 

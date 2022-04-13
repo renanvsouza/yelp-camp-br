@@ -1,4 +1,10 @@
-<h1>All Campgrounds</h1>
+<div>
+	<% if (searchParams) { %>
+	<h1>Search results for '<%= searchParams %>'</h1>
+	<% } else { %>
+	<h1>All Campgrounds</h1>
+	<% } %>
+</div>
 <div class="campgrounds">
 	<% for (let campground of campgrounds) { %>
 	<div class="card m-3 cards">
