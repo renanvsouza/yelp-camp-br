@@ -3,10 +3,12 @@ const Schema = mongoose.Schema
 const Reviews = require('./reviews')
 const cloudinary = require('cloudinary')
 
+const opts = { toJSON: { virtuals: true } }
+
 const imageSchema = new Schema({
     url: String,
     filename: String
-})
+}, opts)
 
 imageSchema.virtual('thumbnail').get(function () {
     return this.url.replace('/upload', '/upload/w_200')
@@ -47,6 +49,13 @@ const campgroundSchema = new Schema({
             ref: 'Review'
         }
     ]
+}, opts)
+
+campgroundSchema.virtual('properties').get(function () {
+    return {
+        title: this.title,
+        price: this.price
+    }
 })
 
 campgroundSchema.post('findOneAndDelete', async function (campground) {

@@ -7,8 +7,7 @@ const geocoder = mbxGeocoding({ accessToken: process.env.MAPBOX_TOKEN });
 
 module.exports.getCampIndex = async (req, res, next) => {
     const campgrounds = await Campground.find({})
-    res.locals.searchParams = ""
-    res.render('campgrounds/index', { campgrounds })
+    res.render('campgrounds/index', { campgrounds, layout: false })
 }
 
 //Search a campground
@@ -24,7 +23,7 @@ module.exports.searchCamp = async (req, res) => {
             ]
     })
     res.locals.searchParams = search
-    res.render('campgrounds/index', { campgrounds })
+    res.render('campgrounds/search', { campgrounds })
 }
 
 //Post new campground
@@ -127,7 +126,14 @@ module.exports.getEditCampForm = async (req, res, next) => {
     res.render('campgrounds/edit', { campground: foundCampground })
 }
 
-//Send the campground data in JSON
+//Send all campgrounds data in JSON
+
+module.exports.campgroundsToJSON = async (req, res) => {
+    const campgrounds = await Campground.find({})
+    res.json(campgrounds)
+}
+
+//Send a specific campground data in JSON
 
 module.exports.campgroundToJSON = async (req, res) => {
     const { id } = req.params

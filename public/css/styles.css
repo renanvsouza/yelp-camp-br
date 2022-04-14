@@ -8,19 +8,13 @@
     width: 24rem;
 }
 
-@media (min-width: 1200px) {
+@media (min-width: 1400px) {
     .cards img {
         max-height: 250px;
     }
 }
 
 @media (max-width: 1400px) {
-    .cards {
-        width: 30rem;
-    }
-}
-
-@media (max-width: 1200px) {
     .cards {
         width: 40rem;
     }

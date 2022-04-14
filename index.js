@@ -71,7 +71,7 @@ app.set('layout', 'layouts/layout')
 //Routes
 
 app.get('/', (req, res) => {
-    res.redirect('/campgrounds')
+    res.render('home', { layout: false })
 })
 
 app.use('/campgrounds', campgroundRoutes)

@@ -13,8 +13,17 @@ const userSchema = new Schema({
     }
 })
 
+const passwordValidator = function (password, cb) {
+    var regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    if (!regex.test(password)) {
+        throw new Error('Password must contain at least 8 characters, one letter and one number.')
+    }
+    return cb();
+}
+
+
 //The passport plugin provides a unique username field and password field
-userSchema.plugin(passportLocalMongoose)
+userSchema.plugin(passportLocalMongoose, { passwordValidator })
 
 //Deletes all reviews and campgrounds associated with the user
 // userSchema.post('findOneAndDelete', async function (user) {

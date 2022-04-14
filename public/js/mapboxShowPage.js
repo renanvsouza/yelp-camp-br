@@ -8,7 +8,7 @@ async function main() {
 
     const map = new mapboxgl.Map({
         container: 'map',
-        style: 'mapbox://styles/mapbox/streets-v11',
+        style: 'mapbox://styles/mapbox/outdoors-v11',
         center: coordinates,
         zoom: 9
     })
