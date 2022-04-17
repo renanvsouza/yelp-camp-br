@@ -71,7 +71,7 @@
 		</div>
 	</div>
 </div>
-<% } } %>
+<% }} %>
 <% if (currentUser && (currentUser.id !== campground.author.id)) { %>
 <div class="row mt-3">
 	<div class="col-10 offset-1">
@@ -105,7 +105,8 @@
 		</form>
 	</div>
 </div>
-<% } else if (currentUser.id !== campground.author.id) { %>
+<% } %>
+<% if (!currentUser) { %>
 <div class="row mt-3">
 	<div class="col-10 offset-1">
 		<h5><span><a class="link-secondary" href="/login?origin=/campgrounds/<%= campground.id %>">Login</a></span> to leave a review</h5>

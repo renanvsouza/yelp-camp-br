@@ -29,7 +29,8 @@ module.exports.searchCamp = async (req, res) => {
 //Post new campground
 
 module.exports.postNewCamp = async (req, res, next) => {
-    const { title, price, description, location } = req.body
+    let { title, price, description, location } = req.body
+    price = price.toString().replace(',', '.')
 
     const geoData = await geocoder.forwardGeocode({
         query: location,
@@ -40,7 +41,7 @@ module.exports.postNewCamp = async (req, res, next) => {
     const author = req.user._id
     const newCampground = new Campground({
         title,
-        price,
+        price: new Number(price),
         description,
         location,
         geometry: geoData.body.features[0].geometry,
@@ -81,11 +82,13 @@ module.exports.getCampDetails = async (req, res, next) => {
 
 module.exports.updateCamp = async (req, res, next) => {
     const { id } = req.params
-    const { title, price, description, location, deleteImages } = req.body
+    let { title, price, description, location, deleteImages } = req.body
+    price = price.toString().replace(',', '.')
+
     const campground = await Campground.findByIdAndUpdate(id, {
         title,
         description,
-        price,
+        price: new Number(price),
         location
     })
 

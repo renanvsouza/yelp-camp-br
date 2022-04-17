@@ -16,6 +16,7 @@ const flash = require('connect-flash')
 const passport = require('passport')
 const mongoSanitize = require('express-mongo-sanitize')
 const helmet = require('helmet')
+const MongoStore = require('connect-mongo');
 
 //Database connection
 
@@ -25,12 +26,19 @@ const db = mongoose.connection
 db.on('error', console.error.bind(console, 'Connection error:'))
 db.once('open', () => console.log('Connected to DB'))
 
-//Express middleware
+
+//Session
+
+const store = MongoStore.create({
+    mongoUrl: process.env.DB_CONNECTION,
+    touchAfter: 24 * 3600 //Time period in seconds
+})
 
 const sessionConfig = {
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
+    store: store,
     cookie: {
         name: 'session',
         httpOnly: true,
@@ -38,6 +46,8 @@ const sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24 * 7
     }
 }
+
+//Express middleware
 
 app.use(session(sessionConfig))
 app.use(expressLayouts)
