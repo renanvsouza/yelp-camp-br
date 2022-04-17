@@ -31,10 +31,9 @@ exports.validateReview = function validateReview(req, res, next) {
 
 exports.isLoggedIn = function isLoggedIn(req, res, next) {
     //Store the url the user is requesting from
-    req.session.returnTo = req.originalUrl
     if (!req.isAuthenticated()) {
         req.flash('error', 'You must be logged in.')
-        return res.redirect('/users/login')
+        return res.redirect('/login')
     }
     next()
 }

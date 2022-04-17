@@ -32,7 +32,9 @@
 				</div>
 				<div class="card-body">
 					<h5 class="card-title"><%= campground.title %></h5>
-					<p class="card-text"><%= campground.description %></p>
+					<p class="card-text" style="min-height: 90px;">
+						<%= campground.description.length > 140 ? campground.description.substring(0, 140) + "..." : campground.description %>
+					</p>
 				</div>
 				<ul class="list-group list-group-flush">
 					<li class="list-group-item"><span class="fw-bold">Location: </span><%= campground.location %></li>

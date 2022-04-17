@@ -25,8 +25,8 @@ module.exports.registerUser = async (req, res, next) => {
         req.login(newUser, (err) => {
             if (err) return next(err)
         })
-        req.flash('success', 'Welcome!')
-        res.redirect('/campgrounds')
+        req.session.returnTo = req.originalUrl;
+        res.redirect('/login')
     } catch (e) {
         req.flash('error', e.message)
         res.redirect('back')
@@ -36,6 +36,7 @@ module.exports.registerUser = async (req, res, next) => {
 //Render the login form
 
 module.exports.getLoginForm = (req, res, next) => {
+    req.session.returnTo = req.query.origin
     if (req.user) {
         req.flash('error', 'You are already logged in. To use a different account, please logout first.')
         return res.redirect('back')
@@ -46,8 +47,10 @@ module.exports.getLoginForm = (req, res, next) => {
 //Login and logout
 
 module.exports.login = (req, res, next) => {
+    const redirectUrl = req.session.returnTo || '/campgrounds';
+    req.session.returnTo = null
     req.flash('success', 'Welcome back!')
-    res.redirect('/campgrounds')
+    res.redirect(redirectUrl);
 }
 
 module.exports.logout = (req, res, next) => {

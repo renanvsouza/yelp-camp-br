@@ -5,8 +5,6 @@ async function main() {
     const response = await fetch('/campgrounds/data')
     const campgrounds = { features: await response.json() }
 
-    console.log(campgrounds)
-
     const map = new mapboxgl.Map({
         container: 'map',
         style: 'mapbox://styles/mapbox/outdoors-v11',

@@ -14,6 +14,8 @@ const userRoutes = require('./routes/users')
 const User = require('./models/user')
 const flash = require('connect-flash')
 const passport = require('passport')
+const mongoSanitize = require('express-mongo-sanitize')
+const helmet = require('helmet')
 
 //Database connection
 
@@ -30,6 +32,7 @@ const sessionConfig = {
     resave: false,
     saveUninitialized: true,
     cookie: {
+        name: 'session',
         httpOnly: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,  //Miliseconds, seconds, minutes, hours, days - So it expires 7 days from now
         maxAge: 1000 * 60 * 60 * 24 * 7
@@ -45,6 +48,59 @@ app.use(methodOverride('_method'))
 app.use(flash())
 app.use(passport.initialize())
 app.use(passport.session())
+app.use(mongoSanitize({ allowDots: true }))
+
+//Helmet configuration with content security policy
+
+const scriptSrcUrls = [
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://api.mapbox.com/",
+    "https://kit.fontawesome.com/",
+    "https://cdnjs.cloudflare.com/",
+    "https://cdn.jsdelivr.net",
+]
+
+const styleSrcUrls = [
+    "https://kit-free.fontawesome.com/",
+    "https://stackpath.bootstrapcdn.com/",
+    "https://api.mapbox.com/",
+    "https://api.tiles.mapbox.com/",
+    "https://fonts.googleapis.com/",
+    "https://use.fontawesome.com/",
+    "https://cdn.jsdelivr.net",
+]
+
+const connectSrcUrls = [
+    "https://api.mapbox.com/",
+    "https://a.tiles.mapbox.com/",
+    "https://b.tiles.mapbox.com/",
+    "https://events.mapbox.com/",
+]
+
+const fontSrcUrls = [];
+
+app.use(
+    helmet.contentSecurityPolicy({
+        directives: {
+            defaultSrc: [],
+            connectSrc: ["'self'", ...connectSrcUrls],
+            scriptSrc: ["'unsafe-inline'", "'self'", ...scriptSrcUrls],
+            styleSrc: ["'self'", "'unsafe-inline'", ...styleSrcUrls],
+            workerSrc: ["'self'", "blob:"],
+            objectSrc: [],
+            imgSrc: [
+                "'self'",
+                "blob:",
+                "data:",
+                "https://res.cloudinary.com/rvstestcloud/",
+                "https://images.unsplash.com/",
+            ],
+            fontSrc: ["'self'", ...fontSrcUrls],
+        },
+        crossOriginEmbedderPolicy: false
+    })
+)
 
 //Passport configuration (new createStrategy version- see passport-local-mongoose documentation)
 
@@ -70,12 +126,12 @@ app.set('layout', 'layouts/layout')
 
 //Routes
 
+app.use('/', userRoutes)
+app.use('/campgrounds', campgroundRoutes)
+
 app.get('/', (req, res) => {
     res.render('home', { layout: false })
 })
-
-app.use('/campgrounds', campgroundRoutes)
-app.use('/users', userRoutes)
 
 //404 route handling
 
