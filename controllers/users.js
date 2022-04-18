@@ -25,8 +25,8 @@ module.exports.registerUser = async (req, res, next) => {
         req.login(newUser, (err) => {
             if (err) return next(err)
         })
-        req.session.returnTo = req.originalUrl;
-        res.redirect('/login')
+        req.flash('success', 'Seja bem vindo!')
+        res.redirect('/campgrounds')
     } catch (e) {
         req.flash('error', e.message)
         res.redirect('back')
