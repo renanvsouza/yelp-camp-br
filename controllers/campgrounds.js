@@ -50,7 +50,7 @@ module.exports.postNewCamp = async (req, res, next) => {
     })
 
     await newCampground.save()
-    req.flash('success', 'Campground created!')
+    req.flash('success', 'Área de camping criada!')
     res.redirect(`/campgrounds/${newCampground.id}`)
 }
 
@@ -72,7 +72,7 @@ module.exports.getCampDetails = async (req, res, next) => {
         }
     }).populate('author')
     if (!foundCampground) {
-        req.flash('error', 'Campground not found.')
+        req.flash('error', 'Área de camping não encontrada.')
         return res.redirect('/campgrounds')
     }
     res.render('campgrounds/show', { campground: foundCampground })
@@ -108,7 +108,7 @@ module.exports.updateCamp = async (req, res, next) => {
 
     //Save and redirect
     await campground.save()
-    req.flash('success', 'Campground updated!')
+    req.flash('success', 'Área de camping atualizada!')
     res.redirect(`/campgrounds/${id}`)
 }
 
@@ -117,7 +117,7 @@ module.exports.updateCamp = async (req, res, next) => {
 module.exports.deleteCamp = async (req, res, next) => {
     const { id } = req.params
     await Campground.findByIdAndDelete(id)
-    req.flash('success', 'Campground deleted!')
+    req.flash('success', 'Área de camping deletada!')
     res.redirect('/campgrounds')
 }
 

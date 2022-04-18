@@ -10,24 +10,24 @@
 					<a class="nav-link" aria-current="page" href="/">Home</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" aria-current="page" href="/campgrounds">Campgrounds</a>
+					<a class="nav-link" aria-current="page" href="/campgrounds">Áreas de camping</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="/campgrounds/new">Add a campground</a>
+					<a class="nav-link" href="/campgrounds/new">Adicionar área de camping</a>
 				</li>
 			</ul>
 			<ul class="navbar-nav ml-auto mb-2 mb-lg-0">
 				<li class="nav-item">
 					<% if (!currentUser) { %>
-					<a class="nav-link" aria-current="page" href="/login">Login</a>
+					<a class="nav-link" aria-current="page" href="/login">Entrar</a>
 					<% } else { %>
-					<a class="nav-link" aria-current="page" href="/logout">Logout</a>
+					<a class="nav-link" aria-current="page" href="/logout">Sair</a>
 					<% } %>
 				</li>
 			</ul>
 			<form action="/campgrounds/find" method="GET" class="d-flex">
-				<input class="form-control mx-2" name="search" type="search" placeholder="Find a campground" aria-label="Search">
-				<button class="btn btn-outline-light" type="submit">Search</button>
+				<input class="form-control mx-2" name="search" type="search" placeholder="Encontre um camping" aria-label="Search">
+				<button class="btn btn-outline-light" type="submit">Pesquisar</button>
 			</form>
 		</div>
 	</div>

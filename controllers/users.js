@@ -4,7 +4,7 @@ const User = require('../models/user')
 
 module.exports.getRegisterForm = (req, res, next) => {
     if (req.user) {
-        req.flash('error', 'You are logged in. To register a different account, please logout first.')
+        req.flash('error', 'Você já entrou. Para registrar uma conta diferente, por favor saia primeiro.')
         return res.redirect('/campgrounds')
     }
     res.render('users/register')
@@ -38,7 +38,7 @@ module.exports.registerUser = async (req, res, next) => {
 module.exports.getLoginForm = (req, res, next) => {
     req.session.returnTo = req.query.origin
     if (req.user) {
-        req.flash('error', 'You are already logged in. To use a different account, please logout first.')
+        req.flash('error', 'Você já entrou. Para usar uma conta diferente, por favor saia primeiro.')
         return res.redirect('back')
     }
     res.render('users/login')
@@ -49,12 +49,12 @@ module.exports.getLoginForm = (req, res, next) => {
 module.exports.login = (req, res, next) => {
     const redirectUrl = req.session.returnTo || '/campgrounds';
     req.session.returnTo = null
-    req.flash('success', 'Welcome back!')
+    req.flash('success', 'Seja bem-vindo de volta!')
     res.redirect(redirectUrl);
 }
 
 module.exports.logout = (req, res, next) => {
     req.logOut()
-    req.flash('success', 'Goodbye!')
+    req.flash('success', 'Até logo!')
     res.redirect('/campgrounds')
 }

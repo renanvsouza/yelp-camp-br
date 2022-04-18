@@ -119,7 +119,7 @@ async function main() {
             new mapboxgl.Popup()
                 .setLngLat(coordinates)
                 .setHTML(
-                    `<strong>${title}</strong><br>Price: $ <strong>${price}</strong>/Night`
+                    `<strong>${title}</strong><br>Valor: R$ <strong>${price.toString().replace('.', ',')}</strong>/Diária`
                 )
                 .addTo(map);
         });

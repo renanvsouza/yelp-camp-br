@@ -16,7 +16,7 @@ const userSchema = new Schema({
 
 userSchema.post('save', function (error, doc, next) {
     if (error.name === 'MongoServerError' && error.code === 11000) {
-        next(new Error('E-mail is already registered.'));
+        next(new Error('E-mail já está cadastrado.'));
     } else {
         next();
     }
@@ -27,7 +27,7 @@ userSchema.post('save', function (error, doc, next) {
 const passwordValidator = function (password, cb) {
     var regex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
     if (!regex.test(password)) {
-        throw new Error('Password must contain at least 8 characters, one letter and one number.')
+        throw new Error('A senha deve conter pelo menos 8 caracteres, uma letra e um número.')
     }
     return cb();
 }

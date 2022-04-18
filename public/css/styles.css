@@ -8,6 +8,10 @@
     width: 24rem;
 }
 
+.cards img {
+    max-height: 350px;
+}
+
 @media (min-width: 1400px) {
     .cards img {
         max-height: 250px;
@@ -23,4 +27,11 @@
 .carousel-img {
     width: 900px;
     height: 600px;
+}
+
+@media (max-width: 600px) {
+    .carousel-img {
+        width: 400px;
+        height: 220px;
+    }
 }

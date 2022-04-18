@@ -32,7 +32,7 @@ exports.validateReview = function validateReview(req, res, next) {
 exports.isLoggedIn = function isLoggedIn(req, res, next) {
     //Store the url the user is requesting from
     if (!req.isAuthenticated()) {
-        req.flash('error', 'You must be logged in.')
+        req.flash('error', 'Você precisa entrar primeiro.')
         return res.redirect('/login')
     }
     next()
@@ -44,7 +44,7 @@ exports.isAuthor = async function isAuthor(req, res, next) {
     const { id } = req.params
     const campground = await Campground.findById(id).populate('author')
     if (req.user.id !== campground.author.id) {
-        next(new ExpressError('You have to be an administrator to do that.', 403))
+        next(new ExpressError('Você precisa ser um administrador.', 403))
     }
     next()
 }
@@ -55,7 +55,7 @@ exports.isReviewAuthor = async function isReviewAuthor(req, res, next) {
     const { reviewId } = req.params
     const review = await Review.findById(reviewId).populate('author')
     if (req.user.id !== review.author.id) {
-        next(new ExpressError('You have to be an administrator to do that.', 403))
+        next(new ExpressError('Você precisa ser um administrador.', 403))
     }
     next()
 }

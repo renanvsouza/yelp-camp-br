@@ -1,52 +1,52 @@
 <div class="row text-center my-3">
 	<div class="col">
-		<h1>Editing campground: <%= campground.title %> </h1>
+		<h1>Editando camping: <%= campground.title %> </h1>
 	</div>
 </div>
 <div class="d-flex justify-content-center">
 	<div class="mx-3" style="width: 100%; max-width: 690px;">
 		<form action="/campgrounds/<%= campground.id %>?_method=PUT" method="POST" enctype="multipart/form-data">
 			<div class="mb-3">
-				<label for="title" class="form-label">Title:</label>
+				<label for="title" class="form-label">Título:</label>
 				<input type="text" class="form-control" name="title" id="title" value="<%= campground.title %>">
 			</div>
 			<div class="mb-3">
-				<label for="description" class="form-label">Description: </label>
+				<label for="description" class="form-label">Descrição: </label>
 				<textarea name="description" class="form-control" id="description" cols="20" rows="5"><%= campground.description %> 
         		</textarea>
 			</div>
 			<div class="mb-3">
-				<label for="formFile" class="form-label">Add some images:</label>
+				<label for="formFile" class="form-label">Adicione algumas imagens:</label>
 				<input class="form-control" type="file" id="formFile" name="images" multiple>
 			</div>
-			<label for="" class="form-label">Select images to remove:</label>
+			<label for="" class="form-label">Selecione imagens para remover:</label>
 			<div class="d-flex mb-3 justify-content-evenly align-items-baseline flex-wrap p-3 border">
 				<% campground.images.forEach((img, i) => { %>
 				<div class="m-2">
 					<img src="<%= img.thumbnail %>" class="img-thumbnail" alt="">
 					<div>
 						<input class="form-check-inline me-1" type="checkbox" name="deleteImages[]" id="image-<%= i %>" value="<%= img.filename %>">
-						<label for="image-<%= i %>">Delete?</label>
+						<label for="image-<%= i %>">Deletar?</label>
 					</div>
 				</div>
 				<% }) %>
 			</div>
 			<div class="row mb-3">
-				<label for="price" class="form-label">Price: </label>
+				<label for="price" class="form-label">Preço /Diária: </label>
 				<div class="input-group">
-					<span class="input-group-text" id="inputGroupPrepend">$</span>
+					<span class="input-group-text" id="inputGroupPrepend">R$</span>
 					<input type="text" class="form-control" name="price" id="price" aria-describedby="inputGroupPrepend" value="<%= campground.price %>">
 				</div>
 			</div>
 			<div class="mb-3">
-				<label for="location" class="form-label">Location:</label>
+				<label for="location" class="form-label">Localização:</label>
 				<input type="text" class="form-control" name="location" id="location" value="<%= campground.location %>">
 			</div>
-			<button type="submit" class="btn btn-primary">Save Changes</button>
+			<button type="submit" class="btn btn-primary">Salvar alterações</button>
 		</form>
 		<div class="my-2">
 			<form action="/campgrounds/<%= campground.id %>?_method=DELETE" method="POST">
-				<button class="btn btn-danger" type="submit">Delete Campground</button>
+				<button class="btn btn-danger" type="submit">Deletar camping</button>
 			</form>
 		</div>
 	</div>

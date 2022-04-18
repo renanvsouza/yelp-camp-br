@@ -5,16 +5,16 @@
 	<% if (currentUser && (currentUser.id == campground.author.id)) { %>
 	<div>
 		<span class="badge rounded-pill bg-secondary">
-			<a href="/campgrounds/<%= campground.id %>/edit" style="color: rgb(224, 224, 224); text-decoration: none;">Edit</a>
+			<a href="/campgrounds/<%= campground.id %>/edit" style="color: rgb(224, 224, 224); text-decoration: none;">Editar</a>
 		</span>
 	</div>
 	<% } %>
 	<div class="text-muted align-self-end ms-auto">
 		<p>
 			<% if (currentUser && (currentUser.id == campground.author.id)) { %>
-			Posted by me
+			Postado por mim
 			<% } else { %>
-			Posted by <%= campground.author.username %>
+			Postado por <%= campground.author.username %>
 			<% } %>
 		</p>
 	</div>
@@ -26,13 +26,13 @@
 </div>
 <div class="row border-bottom">
 	<div class="col-10 offset-1">
-		<h4>About:</h4>
+		<h4>Sobre:</h4>
 		<p><%= campground.description %></p>
 	</div>
 </div>
 <div class="row pt-3">
 	<div class="col-10 offset-1">
-		<section><span class="fw-bold">Location: </span><%= campground.location %></section>
+		<section><span class="fw-bold">Localização: </span><%= campground.location %></section>
 	</div>
 </div>
 <div class="row py-3 border-bottom">
@@ -40,13 +40,13 @@
 </div>
 <div class="row py-3 border-bottom">
 	<div class="col-10 offset-1">
-		<section><span class="fw-bold">Price: </span>$ <%= campground.price  %> /night</section>
+		<section><span class="fw-bold">Preço: </span>R$ <%= campground.price.toString().replace('.', ',')  %> /Diária</section>
 	</div>
 </div>
 <% if (campground.reviews.length) { %>
 <div class="row py-3">
 	<div class="col-10 offset-1">
-		<h4>Reviews:</h4>
+		<h4>Avaliações:</h4>
 	</div>
 </div>
 <% for (let review of campground.reviews) { %>
@@ -59,11 +59,11 @@
 				<p class="review">
 					<%= review.body %>
 				</p>
-				<section class="text-muted mt-3">Posted by <%= review.author.username %></section>
+				<section class="text-muted mt-3">Enviado por <%= review.author.username %></section>
 				<% if (currentUser && (currentUser.id == review.author.id)) { %>
 				<div class="mt-2">
 					<form action="/campgrounds/<%= campground.id %>/reviews/<%= review.id %>?_method=DELETE" method="POST">
-						<button class="btn btn-outline-danger btn-sm" type="submit">Delete</button>
+						<button class="btn btn-outline-danger btn-sm" type="submit">Deletar</button>
 					</form>
 				</div>
 				<% } %>
@@ -75,13 +75,13 @@
 <% if (currentUser && (currentUser.id !== campground.author.id)) { %>
 <div class="row mt-3">
 	<div class="col-10 offset-1">
-		<h4>Leave a review:</h4>
+		<h4>Deixe uma avaliação:</h4>
 	</div>
 </div>
 <div class="row">
 	<div class="col-10 offset-1">
 		<form action="/campgrounds/<%= campground.id %>/reviews" method="POST">
-			<label class="form-label" for="rating">Your rating:</label>
+			<label class="form-label" for="rating">Sua nota:</label>
 			<fieldset class="starability-checkmark">
 				<input type="radio" id="no-rate" class="input-no-rate" name="rating" value="0" checked aria-label="No rating." />
 				<input type="radio" id="first-rate1" name="rating" value="1" />
@@ -96,11 +96,11 @@
 				<label for="first-rate5" title="Amazing">5 stars</label>
 			</fieldset>
 			<div class="mb-3">
-				<label class="form-label" for="body">Add some text:</label>
+				<label class="form-label" for="body">Conte o que achou:</label>
 				<textarea class="form-control" name="body" id="body" cols="30" rows="2" required></textarea>
 			</div>
 			<div class="mb-3">
-				<button class="btn btn-success" type="submit">Post Review</button>
+				<button class="btn btn-success" type="submit">Enviar avaliação</button>
 			</div>
 		</form>
 	</div>
@@ -109,7 +109,7 @@
 <% if (!currentUser) { %>
 <div class="row mt-3">
 	<div class="col-10 offset-1">
-		<h5><span><a class="link-secondary" href="/login?origin=/campgrounds/<%= campground.id %>">Login</a></span> to leave a review</h5>
+		<h5><span><a class="link-secondary" href="/login?origin=/campgrounds/<%= campground.id %>">Entre</a></span> para deixar uma avaliação.</h5>
 	</div>
 </div>
 <% } %>

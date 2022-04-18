@@ -20,7 +20,7 @@
 	<main class="container mb-3" style="max-width: 900px;">
 		<%- include('../includes/flash') %>
 		<div class="text-center">
-			<h1>Our Campgrounds</h1>
+			<h1>Áreas de camping</h1>
 		</div>
 		<div class="campgrounds">
 			<% for (let campground of campgrounds) { %>
@@ -37,11 +37,11 @@
 					</p>
 				</div>
 				<ul class="list-group list-group-flush">
-					<li class="list-group-item"><span class="fw-bold">Location: </span><%= campground.location %></li>
-					<li class="list-group-item"><span class="fw-bold">Price: </span>$ <%= campground.price  %> / night</li>
+					<li class="list-group-item"><span class="fw-bold">Localização: </span><%= campground.location %></li>
+					<li class="list-group-item"><span class="fw-bold">Preço: </span>R$ <%= campground.price.toString().replace('.', ',')  %> / Diária</li>
 				</ul>
 				<div class="card-body">
-					<a href="/campgrounds/<%= campground.id %>" class="card-link">Show details</a>
+					<a href="/campgrounds/<%= campground.id %>" class="card-link">Mostrar detalhes</a>
 				</div>
 			</div>
 			<% } %>
